@@ -1,0 +1,58 @@
+﻿@using Umbraco.Boilerplate.Web.Controllers
+@model Umbraco.Boilerplate.Web.ViewModels.SiteMember
+
+<div class="row">
+    <div class="col-xs-4">
+
+        @using (Html.BeginUmbracoForm<AccountController>("UpdateAccount", null, new { role = "form" }, FormMethod.Post))
+        {
+            if (!ViewData.ModelState.IsValid)
+            {
+                if(ViewData.ModelState.Keys.Contains("Error"))
+                {
+                    <div class="alert alert-danger">
+                        @Html.ValidationMessage("Error")
+                    </div>
+                }
+                else if (ViewData.ModelState.Keys.Contains(""))
+                {
+                    <div class="alert alert-danger">
+                        @ViewData.ModelState[""].Errors[0].ErrorMessage
+                    </div>
+                }
+                else
+                {
+                    @Html.ValidationSummary(string.Empty, new { @class="alert alert-danger" })
+                }
+            } 
+            if (TempData.Keys.Contains("Success"))
+            {
+            <div class="alert alert-success">
+                @TempData["Success"].ToString()
+            </div>                
+            }
+            <h2>@Model.UserName account info</h2>
+            <div class="form-group">
+                @Html.HiddenFor(m => m.UserName)
+                @Html.LabelFor(m => m.Email)
+                @Html.TextBoxFor(m => m.Email, new { @class = "form-control", placeholder = "Enter your email" })
+            </div>
+            <h4>If you want to change your password...</h4>
+            <div class="form-group">
+                @Html.LabelFor(m => m.OldPassword)
+                @Html.PasswordFor(m => m.OldPassword, new { @class = "form-control", placeholder = "Enter your old password" })
+            </div>
+            <div class="form-group">
+                @Html.LabelFor(m => m.NewPassword)
+                @Html.PasswordFor(m => m.NewPassword, new { @class = "form-control", placeholder = "Enter your new password" })
+            </div>
+            <div class="form-group">
+                @Html.LabelFor(m => m.ConfirmPassword)
+                @Html.PasswordFor(m => m.ConfirmPassword, new { @class = "form-control", placeholder = "Confirm password" })
+            </div>                        
+    
+            <button type="submit" class="btn btn-default">Update Account</button>
+        }
+
+    </div>
+</div>

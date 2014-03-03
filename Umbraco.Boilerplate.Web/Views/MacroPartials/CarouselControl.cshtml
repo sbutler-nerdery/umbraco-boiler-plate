@@ -1,0 +1,6 @@
+﻿@{
+    var id = int.Parse(Model.MacroParameters["mediaFolderId"].ToString());
+    var width = int.Parse(Model.MacroParameters["width"].ToString());
+}
+@inherits Umbraco.Web.Macros.PartialViewMacroPage
+@Html.Action("Carousel", "Media", new { folderId = id, width = width })

@@ -1,0 +1,148 @@
+﻿@using Umbraco.Boilerplate.Web.Helpers
+@inherits Umbraco.Web.Mvc.UmbracoTemplatePage
+@{
+    Layout = null;
+    var rootPage = CurrentPage.AncestorOrSelf(1);
+    var activeRootClass = rootPage.Id == CurrentPage.Id ? "class=active" : string.Empty;
+    var breadCrumbPage = CurrentPage;
+    var breadCrumbCollection = new List<dynamic>();
+
+    while (breadCrumbPage.Parent != null)
+    {
+        breadCrumbCollection.Add(new { breadCrumbPage.Level, breadCrumbPage.Url, breadCrumbPage.Name, breadCrumbPage.showInBreadcrumb });
+        breadCrumbPage = breadCrumbPage.Parent;
+    }
+
+    //Order the breadcrumbs by level
+    breadCrumbCollection = breadCrumbCollection.OrderBy(x => x.Level).ToList();   
+}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <title>@CurrentPage.Name</title>
+    <link href="~/favicon.ico" rel="shortcut icon" type="image/x-icon" />
+    <meta name="viewport" content="width=device-width" />
+    <link href="~/Content/bootstrap/bootstrap.min.css" rel="stylesheet" />
+    <link href="~/Content/boilerplate.css" rel="stylesheet" />
+</head>
+<body>
+    <div class="container">
+        @*Only show the nav bar if there is a root page element.*@
+        @if (CurrentPage.showNavigationOnThisPage)
+        {
+            if (rootPage != null)
+            {
+                <nav class="navbar navbar-default" role="navigation">
+                    <div class="container-fluid">
+                        <div class="navbar-header">
+                            <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1">
+                                <span class="sr-only">Toggle navigation</span>
+                                <span class="icon-bar"></span>
+                                <span class="icon-bar"></span>
+                                <span class="icon-bar"></span>
+                            </button>
+                        </div>
+                        <!-- Collect the nav links, forms, and other content for toggling -->
+                        <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+                            <ul class="nav navbar-nav">
+                                @if (rootPage.showInNavigation)
+                                {
+                                    <li @activeRootClass><a href="@rootPage.Url">@rootPage.Name</a></li>
+                                }
+                                @foreach (var childPage in rootPage.Children)
+                                {
+                                    var childVisible = Html.IsNodeVisible((int)childPage.Id, (string)childPage.Path);
+
+                                    if (childPage.showInNavigation && childVisible)
+                                    {
+                                        var activeChildPageClass = childPage.Id == CurrentPage.Id ? "class=active" : string.Empty;
+                                        if (childPage.Children.Count() == 0)
+                                        {
+                                    <li @activeChildPageClass><a href="@childPage.Url">@childPage.Name</a></li>
+                                        }
+                                        else
+                                        {
+                                    <li class="dropdown">
+                                        <a href="@childPage.Url" class="dropdown-toggle" data-toggle="dropdown">@childPage.Name <b class="caret"></b></a>
+                                        <ul class="dropdown-menu">
+                                            @foreach (var subNavPage in childPage.Children)
+                                            {
+                                                var subNavVisible = Html.IsNodeVisible((int)childPage.Id, (string)childPage.Path);
+                                                if (subNavPage.showInNavigation && subNavVisible)
+                                                {
+                                                    var activeSubNavClass = subNavPage.Id == CurrentPage.Id ? "class=active" : string.Empty;
+                                                    <li @activeSubNavClass><a href="@subNavPage.Url">@subNavPage.Name</a></li>
+                                                }
+                                            }
+                                        </ul>
+                                    </li>                         
+                                        }
+                                    }
+                                }
+                            </ul>
+                            <form action="/search-results/" method="get" class="navbar-form navbar-left" role="search">
+                                <button type="submit" class="btn btn-default">
+                                    <span class="glyphicon glyphicon-search"></span>
+                                </button>
+                                <div class="form-group">
+                                    <input name="query" type="text" class="form-control" placeholder="Search...">
+                                </div>
+                            </form>
+                            <ul class="nav navbar-nav navbar-right">
+                                @if (User.Identity.IsAuthenticated)
+                                {
+                                    var accountLinkActive = CurrentPage.Name.ToLower() == "my account" ? "class=active" : string.Empty;
+                                    <li @accountLinkActive><a href="/my-account/">My Account</a></li>                           
+                                    <li>@Html.ActionLink("Logout", "Logout", "Account")</li>                           
+                                }
+                                else
+                                {
+                                    <li><a href="/login/">Login</a></li>   
+                                }
+                            </ul>
+                        </div>
+                        <!-- /.navbar-collapse -->
+                    </div>
+                    <!-- /.container-fluid -->
+                </nav>  
+            }
+        }
+        @if (CurrentPage.showBreadcrumbsOnThisPage)
+        {
+            <ol class="breadcrumb">
+            @if (rootPage.showInBreadcrumb)
+            {
+                if (rootPage.Id == CurrentPage.Id)
+                {
+                <li class="active">@breadCrumbPage.Name</li>
+                }
+                else
+                {
+                <li><a href="@rootPage.Url">@rootPage.Name</a></li>
+                }
+            }
+
+            @for (var i = 0; i < breadCrumbCollection.Count; i++)
+            {
+                var page = breadCrumbCollection[i];
+                if (page.showInBreadcrumb)
+                {
+                    if (i == breadCrumbCollection.Count - 1)
+                    {
+                <li class="active">@page.Name</li>
+                    }
+                    else
+                    {
+                <li><a href="@page.Url">@page.Name</a></li>
+                    }
+                }
+            }
+        </ol>
+        }
+        @RenderBody()
+    </div>
+    <script src="~/scripts/jquery-1.9.1.min.js"></script>
+    <script src="~/scripts/bootstrap.min.js"></script>
+</body>
+</html>

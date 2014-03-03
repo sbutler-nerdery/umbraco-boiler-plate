@@ -1,0 +1,50 @@
+﻿@using Umbraco.Boilerplate.Web.ViewModels
+@model List<CarouselItem>
+@{
+    var width = ViewBag.Width.ToString() + "px";
+}
+@if(Model.Count <= 0)
+{
+    <div>Folder is Empty</div>
+}
+else
+{
+    <div class="center-block" style="width:@width">
+        <div id="carousel-example-generic" class="carousel slide" data-ride="carousel">
+          <!-- Indicators -->
+          <ol class="carousel-indicators">
+            @for (var i = 0; i < Model.Count; i++)
+            {
+                var activeClass = i == 0 ? "class=active" : string.Empty;
+                <li data-target="#carousel-example-generic" data-slide-to="@i" @activeClass></li>    
+            }
+          </ol>
+
+          <!-- Wrapper for slides -->
+          <div class="carousel-inner">
+            @for (var i = 0; i < Model.Count; i++)
+            {
+                var item = Model[i];
+                var classInfo = i == 0 ? "active" : string.Empty;
+            
+                <div class="item @classInfo">
+                  <img src="@item.Url" alt="@item.Title">
+                  <div class="carousel-caption">
+                    <h3>@item.Title</h3>
+                    <p>@item.Description</p>
+                  </div>
+                </div>       
+            }
+          </div>
+
+          <!-- Controls -->
+          <a class="left carousel-control" href="#carousel-example-generic" data-slide="prev">
+            <span class="glyphicon glyphicon-chevron-left"></span>
+          </a>
+          <a class="right carousel-control" href="#carousel-example-generic" data-slide="next">
+            <span class="glyphicon glyphicon-chevron-right"></span>
+          </a>
+        </div>
+    </div>        
+}
+

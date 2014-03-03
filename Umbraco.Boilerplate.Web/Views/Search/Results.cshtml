@@ -1,0 +1,24 @@
+﻿@model IEnumerable<SearchResult>
+
+Your search returned <b>@Model.Count()</b> results.
+
+<table class="table table-striped">
+    <thead>
+        <tr>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var result in Model)
+        {
+            var url = umbraco.library.NiceUrl(result.Id);
+            var contentSnippet = result.Fields.ContainsKey("mainContent") ? 
+                result.Fields["mainContent"].Length > 20 ? 
+                " - " + result.Fields["mainContent"].Substring(0,19) + "..." : " - " + result.Fields["mainContent"]
+                : string.Empty;
+            <tr>
+                <td><a href="@url">@result.Fields["nodeName"]</a>@contentSnippet</td>
+            </tr>
+        }
+    </tbody>
+</table>

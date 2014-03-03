@@ -1,0 +1,36 @@
+﻿@using Umbraco.Boilerplate.Web.Controllers
+@model Umbraco.Boilerplate.Web.ViewModels.Register
+
+<div class="row">
+    <div class="col-xs-4">
+
+        @using (Html.BeginUmbracoForm<AccountController>("NewUser", null, new { role = "form" }, FormMethod.Post))
+        {
+            if(ViewData.ModelState.Keys.Contains("Error"))
+            {
+                <div class="alert alert-danger">
+                    @Html.ValidationMessage("Error")
+                </div>
+            }
+            else
+            {
+                @Html.ValidationSummary(string.Empty, new { @class="alert alert-danger" })
+            }
+            <div class="form-group">
+                @Html.LabelFor(m => m.UserName)
+                @Html.TextBoxFor(m => m.UserName, new { @class = "form-control", placeholder = "Enter a user name" })
+            </div>            
+            <div class="form-group">
+                @Html.LabelFor(m => m.Email)
+                @Html.TextBoxFor(m => m.Email, new { @class = "form-control", placeholder = "Enter email" })
+            </div>
+            <div class="form-group">
+                @Html.LabelFor(m => m.Password)
+                @Html.PasswordFor(m => m.Password, new { @class = "form-control", placeholder = "Enter password" })
+            </div>
+    
+            <button type="submit" class="btn btn-default">Create Account</button>
+        }
+
+    </div>
+</div>

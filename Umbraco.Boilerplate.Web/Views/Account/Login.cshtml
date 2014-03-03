@@ -1,0 +1,44 @@
+﻿@using Umbraco.Boilerplate.Web.Controllers
+@model Umbraco.Boilerplate.Web.ViewModels.Login
+
+<div class="row">
+    <div class="col-xs-4">
+
+        @using (Html.BeginUmbracoForm<AccountController>("SubmitLogin", null, new { role = "form" }, FormMethod.Post))
+        {
+            if (!ViewData.ModelState.IsValid)
+            {
+                if(ViewData.ModelState.Keys.Contains("Error"))
+                {
+                    <div class="alert alert-danger">
+                        @Html.ValidationMessage("Error")
+                    </div>
+                }
+                else
+                {
+                    @Html.ValidationSummary(string.Empty, new { @class="alert alert-danger" })
+                }
+            
+            }    
+            <div class="form-group">
+                @Html.LabelFor(m => m.UserName)
+                @Html.TextBoxFor(m => m.UserName, new { @class = "form-control", placeholder = "Enter your user name" })
+            </div>
+            <div class="form-group">
+                @Html.LabelFor(m => m.Password)
+                @Html.PasswordFor(m => m.Password, new { @class = "form-control", placeholder = "Enter your password" })
+            </div>
+    
+            <div class="checkbox">
+                @Html.LabelFor(m => m.KeepMeLoggedIn)
+                @Html.CheckBoxFor(m => m.KeepMeLoggedIn)
+            </div>
+
+            <div class="form-group">
+                Not a member? <a href="/Register">Register here</a>
+            </div>    
+    
+            <button type="submit" class="btn btn-default">Login</button>
+        }
+    </div>
+</div>
