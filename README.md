@@ -14,6 +14,7 @@ If you can think of anything else to add to this boiler plate that would be usef
 #Setup
 
 Here is how to get this project running:
+
 1. Clone the repository
 2. Import the /DB/Umbraco.Boilerplate.bacpac file into SQL server
 3. Bulid the project (make sure NuGet packages are restored)
